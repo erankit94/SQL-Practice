@@ -1,3 +1,5 @@
+SQLZOO Exercises:
+
 The JOIN operation:
 
 1)
@@ -8,3 +10,331 @@ SELECT matchid, player FROM goal
 SELECT id,stadium,team1,team2
   FROM game
 where id = 1012
+
+3)
+SELECT player,teamid, stadium, mdate
+  FROM game JOIN goal ON (id=matchid)
+where teamid = 'GER'
+
+4)
+select team1, team2, player
+from game inner join goal on game.id = goal.matchid
+where player like 'Mario%'
+
+5)
+SELECT player, teamid, coach, gtime
+  FROM goal inner join eteam on goal.teamid = eteam.id
+ WHERE gtime<=10
+ 
+6)
+select mdate, teamname
+from eteam inner join game on eteam.id = game.team1
+where coach = 'Fernando Santos'
+
+7)
+select player
+from game join goal on game.id = goal.matchid
+where stadium = 'National Stadium, Warsaw'
+
+8)
+SELECT distinct(player)
+  FROM game JOIN goal ON matchid = id 
+    WHERE (team1='GER' AND team2='GRE') or (team1='GRE' AND team2='GER') and teamid!='GER'
+
+9)
+SELECT teamname, count(player)
+  FROM eteam JOIN goal ON id=teamid
+group by eteam.teamname
+
+10)
+select stadium, count(player)
+from game join goal on id = matchid
+group by stadium
+
+11)
+SELECT matchid, mdate, count(player)
+  FROM game JOIN goal ON matchid = id 
+ WHERE (team1 = 'POL' OR team2 = 'POL')
+group by id
+
+12)
+select matchid, mdate, count(player)
+from game join goal on id = matchid
+where teamid = 'GER'
+group by matchid
+
+13)
+SELECT mdate,
+  team1,
+  CASE WHEN teamid=team1 THEN count(teamid) END score1,
+  team2,
+  case when teamid=team2 then count(teamid) end score2
+  FROM game JOIN goal ON matchid = id 
+group by mdate, team1, team2
+
+More JOIN operations:
+
+1)
+SELECT id, title
+ FROM movie
+ WHERE yr=1962
+ 
+2)
+select yr
+from movie
+where title = 'Citizen Kane'
+
+3)
+select id, title, yr
+from movie
+where title like '%Star Trek%'
+order by yr
+
+4)
+select id
+from actor
+where name =  'Glenn Close'
+
+5)
+select id
+from movie
+where title = 'Casablanca'
+
+6)
+select name
+from actor join casting on actor.id = casting.actorid
+where movieid = 11768
+
+7)
+select name
+from actor join casting 
+on actor.id = casting.actorid
+join movie on movie.id = casting.movieid
+where title =  'Alien'
+
+8)
+select title
+from actor join casting 
+on actor.id = casting.actorid
+join movie on movie.id = casting.movieid
+where actor.name = 'Harrison Ford' 
+
+9)
+select title
+from actor join casting 
+on actor.id = casting.actorid
+join movie on movie.id = casting.movieid
+where actor.name = 'Harrison Ford' and ord!=1
+
+10)
+select title, actor.name
+from actor join casting 
+on actor.id = casting.actorid
+join movie on movie.id = casting.movieid
+where yr = '1962' and ord=1
+
+11)
+SELECT yr,COUNT(title) FROM
+  movie JOIN casting ON movie.id=movieid
+        JOIN actor   ON actorid=actor.id
+WHERE name='Rock Hudson'
+GROUP BY yr
+HAVING COUNT(title) > 2
+
+12)
+SELECT movieid FROM casting
+WHERE actorid IN (
+  SELECT id FROM actor
+  WHERE name='Julie Andrews')
+  
+13)
+Not done
+
+14)
+select distinct(title), count(actorid)
+from actor join casting 
+on actor.id = casting.actorid
+join movie on movie.id = casting.movieid
+where yr = 1978
+group by movieid
+order by count(actorid) desc, title
+
+15)
+select name
+from actor join casting 
+on actor.id = casting.actorid
+join movie on movie.id = casting.movieid
+where movieid in 
+(select movieid
+from actor join casting 
+on actor.id = casting.actorid
+join movie on movie.id = casting.movieid
+where name =  'Art Garfunkel') and
+name !=  'Art Garfunkel'
+
+Window Functions:
+
+1) 
+SELECT lastName, party, votes
+  FROM ge
+ WHERE constituency = 'S14000024' AND yr = 2017
+ORDER BY votes DESC
+
+2)
+SELECT party, votes,
+       RANK() OVER (ORDER BY votes DESC) as posn
+  FROM ge
+ WHERE constituency = 'S14000024' AND yr = 2017
+ORDER BY party
+
+3)
+SELECT yr,party, votes,
+      RANK() OVER (PARTITION BY yr ORDER BY votes DESC) as posn
+  FROM ge
+ WHERE constituency = 'S14000021'
+ORDER BY party,yr
+
+4)
+Not done
+
+5)
+SELECT constituency,party, votes
+  FROM ge
+ WHERE constituency BETWEEN 'S14000021' AND 'S14000026'
+   AND yr  = 2017
+ORDER BY constituency,votes DESC
+
+6)
+SELECT party, count(*)
+  FROM ge
+ WHERE constituency like 'S%'
+   AND yr  = 2017
+group by party
+ORDER BY party
+
+Self Join:
+
+1)
+select count(*)
+from stops
+
+2)
+select id
+from stops
+where name =  'Craiglockhart'
+
+3)
+Not done
+
+4)
+SELECT company, num, COUNT(*)
+FROM route WHERE stop=149 OR stop=53
+GROUP BY company, num
+having count(*) >1
+
+5)
+SELECT a.company, a.num, a.stop, b.stop
+FROM route a JOIN route b ON
+  (a.company=b.company AND a.num=b.num)
+WHERE a.stop=53 and b.stop = 149
+
+6)
+SELECT a.company, a.num, stopa.name, stopb.name
+FROM route a JOIN route b ON
+  (a.company=b.company AND a.num=b.num)
+  JOIN stops stopa ON (a.stop=stopa.id)
+  JOIN stops stopb ON (b.stop=stopb.id)
+WHERE stopa.name='Craiglockhart' and stopb.name = 'London Road'
+
+7-10) Not done
+
+Assessments:
+
+Guest House:
+
+1)
+SELECT booking_date, nights
+FROM booking 
+ WHERE guest_id = 1183
+
+2)
+select arrival_time, first_name, last_name
+from booking join guest on guest_id = id
+where booking_date = '2016-11-05'
+order by arrival_time 
+
+3)
+select booking_id , room_type_requested , occupants , amount 
+from rate inner join booking 
+where room_type_requested  = room_type and
+occupants = occupancy and booking_id in (5152, 5165, 5154, 5295)
+
+4)
+select first_name , last_name , address     
+from booking join guest on guest_id = id
+where room_no = 101 and
+booking_date = '2016-12-03'
+
+5)
+select guest_id , COUNT(nights), SUM(nights)
+from booking
+where guest_id  in (1185,1270)
+group by guest_id
+
+6)
+SELECT sum(nights*amount)
+FROM booking JOIN guest on guest_id = guest.id
+inner join rate 
+where room_type_requested  = room_type and
+occupants = occupancy
+and first_name = 'Ruth' and last_name = 'Cadbury'
+
+7)
+SELECT sum(rate.amount) + ifnull(extra.amount,0)
+FROM booking JOIN guest on guest_id = guest.id 
+inner join extra on booking.booking_id = extra.booking_id
+inner join rate 
+where room_type_requested  = room_type and
+occupants = occupancy
+and booking.booking_id = 5346
+
+8)
+select last_name, first_name, address, ifnull(sum(nights),0)
+from booking right join guest on guest_id = id
+where address like 'Edinburgh%'
+group by first_name
+order by last_name, first_name
+
+9)
+select booking_date, count(booking_date)
+from booking
+where booking_date between '2016-11-25' and '2016-12-01'
+group by booking_date
+
+10)
+select sum(occupants)
+from booking
+where booking_date = '2016-11-21'
+
+11)
+select g1.last_name, g1.first_name, g2.first_name  
+from guest g1 join guest g2
+on g1.last_name = g2.last_name 
+join booking b1 on b1.guest_id = g1.id 
+join booking b2 on b1.booking_date = b2.booking_date
+where g1.first_name != g2.first_name 
+group by g1.last_name, g1.first_name, g2.first_name  
+
+12)
+Not Done
+
+13)
+SELECT room_no
+from booking
+where (date_format(booking_date,'%d')+nights) = 25
+and date_format(booking_date,'%m') = 11
+limit 3
+
+14-15) Not Done
+
+
