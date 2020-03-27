@@ -36,10 +36,7 @@ select player
 from game join goal on game.id = goal.matchid
 where stadium = 'National Stadium, Warsaw'
 
-8)
-SELECT distinct(player)
-  FROM game JOIN goal ON matchid = id 
-    WHERE (team1='GER' AND team2='GRE') or (team1='GRE' AND team2='GER') and teamid!='GER'
+8) Not Done
 
 9)
 SELECT teamname, count(player)
@@ -63,14 +60,7 @@ from game join goal on id = matchid
 where teamid = 'GER'
 group by matchid
 
-13)
-SELECT mdate,
-  team1,
-  CASE WHEN teamid=team1 THEN count(teamid) END score1,
-  team2,
-  case when teamid=team2 then count(teamid) end score2
-  FROM game JOIN goal ON matchid = id 
-group by mdate, team1, team2
+13) Not Done
 
 More JOIN operations:
 
@@ -141,11 +131,8 @@ WHERE name='Rock Hudson'
 GROUP BY yr
 HAVING COUNT(title) > 2
 
-12)
-SELECT movieid FROM casting
-WHERE actorid IN (
-  SELECT id FROM actor
-  WHERE name='Julie Andrews')
+12) 
+Not Done
   
 13)
 Not done
@@ -312,9 +299,7 @@ where booking_date between '2016-11-25' and '2016-12-01'
 group by booking_date
 
 10)
-select sum(occupants)
-from booking
-where booking_date = '2016-11-21'
+Not Done
 
 11)
 select g1.last_name, g1.first_name, g2.first_name  
