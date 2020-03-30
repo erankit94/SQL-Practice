@@ -525,15 +525,6 @@ END
 FROM BST
 ORDER BY N
 
-The PADS:
-SELECT concat(NAME, '(', LEFT( OCCUPATION, 1), ')')
-FROM OCCUPATIONS
-ORDER BY NAME;
-SELECT concat('There are a total of ', COUNT(*), ' ', lower(OCCUPATION), 's.')
-FROM OCCUPATIONS
-GROUP BY OCCUPATION
-ORDER BY COUNT(*), OCCUPATION;
-
 New Companies:
 select company_code, founder,
 (select count(distinct lead_manager_code) from Lead_Manager where company_code=c.company_code),
@@ -542,3 +533,26 @@ select company_code, founder,
 (select count(distinct employee_code) from Employee where company_code=c.company_code)
 from Company c
 order by company_code;
+
+Weather Observation Station 18:
+SELECT 
+ROUND(ABS(MIN(LAT_N) - MAX(LAT_N)) + ABS(MIN(LONG_W) - MAX(LONG_W)),4) 
+FROM STATION
+
+SQL Project Planning:
+SELECT start_date, MIN(end_date)
+FROM 
+(SELECT start_date FROM PROJECTS WHERE start_date NOT IN (SELECT end_date FROM PROJECTS)) a,
+(SELECT end_date FROM PROJECTS WHERE end_date NOT IN (SELECT start_date FROM PROJECTS)) b
+where start_date < end_date
+GROUP BY start_date
+ORDER BY datediff(day, start_date, MIN(end_date)), start_date
+
+The PADS:
+SELECT concat(NAME, '(', LEFT( OCCUPATION, 1), ')')
+FROM OCCUPATIONS
+ORDER BY NAME;
+SELECT concat('There are a total of ', COUNT(*), ' ', lower(OCCUPATION), 's.')
+FROM OCCUPATIONS
+GROUP BY OCCUPATION
+ORDER BY COUNT(*), OCCUPATION;
