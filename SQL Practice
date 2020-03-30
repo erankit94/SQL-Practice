@@ -36,7 +36,9 @@ select player
 from game join goal on game.id = goal.matchid
 where stadium = 'National Stadium, Warsaw'
 
-8) Not Done
+8) SELECT distinct(player)
+  FROM game JOIN goal ON matchid = id 
+    WHERE (team1='GER' or team2='GRE') and teamid!='GER'
 
 9)
 SELECT teamname, count(player)
@@ -60,7 +62,13 @@ from game join goal on id = matchid
 where teamid = 'GER'
 group by matchid
 
-13) Not Done
+13) SELECT mdate,
+  team1,
+  CASE WHEN teamid=team1 THEN count(teamid) END score1,
+  team2,
+  case when teamid=team2 then count(teamid) end score2
+  FROM game JOIN goal ON matchid = id 
+group by mdate, team1, team2
 
 More JOIN operations:
 
@@ -132,10 +140,19 @@ GROUP BY yr
 HAVING COUNT(title) > 2
 
 12) 
-Not Done
+SELECT title, name
+from actor join casting 
+on actor.id = casting.actorid
+join movie on movie.id = casting.movieid
+WHERE name='Julie Andrews'
+and ord = 1
   
 13)
-Not done
+select name
+from actor join casting 
+on actor.id = casting.actorid
+join movie on movie.id = casting.movieid
+where count(movie.id) >= 15
 
 14)
 select distinct(title), count(actorid)
@@ -211,7 +228,9 @@ from stops
 where name =  'Craiglockhart'
 
 3)
-Not done
+select * 
+from stops
+where name = 'London Road'
 
 4)
 SELECT company, num, COUNT(*)
@@ -233,7 +252,11 @@ FROM route a JOIN route b ON
   JOIN stops stopb ON (b.stop=stopb.id)
 WHERE stopa.name='Craiglockhart' and stopb.name = 'London Road'
 
-7-10) Not done
+7)
+select company, num, a.name, b.name
+from stops a join route on a.id = route.stop
+join stops b on a.id = b.id
+where a.name in ('Haymarket','Leith') and b.name in ('Haymarket','Leith')
 
 Assessments:
 
@@ -341,3 +364,12 @@ SELECT concat('There are a total of ', COUNT(*), ' ', lower(OCCUPATION), 's.')
 FROM OCCUPATIONS
 GROUP BY OCCUPATION
 ORDER BY COUNT(*), OCCUPATION;
+
+New Companies:
+select company_code, founder,
+(select count(distinct lead_manager_code) from Lead_Manager where company_code=c.company_code),
+(select count(distinct senior_manager_code) from Senior_Manager where company_code=c.company_code),
+(select count(distinct manager_code) from Manager where company_code=c.company_code),
+(select count(distinct employee_code) from Employee where company_code=c.company_code)
+from Company c
+order by company_code;
